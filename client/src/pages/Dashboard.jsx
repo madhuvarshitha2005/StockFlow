@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import api from '../services/api';
 import Badge from '../components/Badge';
 import StockAdjustModal from '../components/StockAdjustModal';
+import StockHistoryModal from '../components/StockHistoryModal';
 import ProductModal from '../components/ProductModal';
 import {
   Package,
@@ -15,6 +16,9 @@ import {
   Activity,
   CheckCircle2,
   RefreshCw,
+  Percent,
+  History,
+  AlertCircle,
 } from 'lucide-react';
 
 const Dashboard = () => {
@@ -24,6 +28,7 @@ const Dashboard = () => {
 
   // Modals state
   const [adjustingProduct, setAdjustingProduct] = useState(null);
+  const [historyProduct, setHistoryProduct] = useState(null);
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
 
   const fetchDashboardStats = async () => {
@@ -63,7 +68,16 @@ const Dashboard = () => {
   }
 
   const { summary, lowStockProducts, recentMovements } = stats || {
-    summary: { totalProducts: 0, totalQuantity: 0, totalRetailValue: 0, lowStockCount: 0, defaultLowStockThreshold: 5 },
+    summary: {
+      totalProducts: 0,
+      totalQuantity: 0,
+      totalRetailValue: 0,
+      totalCostValue: 0,
+      potentialProfit: 0,
+      profitMarginPct: 0,
+      lowStockCount: 0,
+      defaultLowStockThreshold: 5,
+    },
     lowStockProducts: [],
     recentMovements: [],
   };
@@ -75,7 +89,7 @@ const Dashboard = () => {
         <div>
           <h1 className="text-2xl font-black text-slate-900 tracking-tight">Inventory Overview</h1>
           <p className="text-sm text-slate-500 mt-1">
-            Real-time stock levels and low inventory alerts for {summary.organizationName || 'your store'}.
+            Real-time stock levels, catalog valuations, and low inventory alerts for {summary.organizationName || 'your store'}.
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -96,6 +110,30 @@ const Dashboard = () => {
         </div>
       </div>
 
+      {/* Alert Banner for Low Stock */}
+      {summary.lowStockCount > 0 && (
+        <div className="p-4 rounded-2xl bg-amber-50/90 border border-amber-200/80 flex items-center justify-between gap-4 text-amber-900">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+              <AlertTriangle className="w-5 h-5" />
+            </div>
+            <div>
+              <p className="text-xs font-bold uppercase tracking-wider text-amber-700">Immediate Action Recommended</p>
+              <p className="text-sm font-medium text-amber-900">
+                You have <span className="font-bold underline">{summary.lowStockCount} items</span> at or below their reorder threshold.
+              </p>
+            </div>
+          </div>
+          <a
+            href="#low-stock-section"
+            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-200/70 hover:bg-amber-200 text-xs font-bold text-amber-900 transition"
+          >
+            <span>Review Items</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </a>
+        </div>
+      )}
+
       {error && (
         <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-sm text-rose-700">
           {error}
@@ -114,7 +152,7 @@ const Dashboard = () => {
           </div>
           <div className="mt-4">
             <p className="text-3xl font-black text-slate-900">{summary.totalProducts}</p>
-            <p className="text-xs text-slate-500 mt-1">Unique SKUs registered</p>
+            <p className="text-xs text-slate-500 mt-1">Unique SKUs active</p>
           </div>
         </div>
 
@@ -128,7 +166,7 @@ const Dashboard = () => {
           </div>
           <div className="mt-4">
             <p className="text-3xl font-black text-slate-900">{summary.totalQuantity.toLocaleString()}</p>
-            <p className="text-xs text-slate-500 mt-1">Total physical units on hand</p>
+            <p className="text-xs text-slate-500 mt-1">Total physical units</p>
           </div>
         </div>
 
@@ -159,14 +197,14 @@ const Dashboard = () => {
                 </span>
               )}
             </div>
-            <p className="text-xs text-slate-500 mt-1">Products at or below threshold</p>
+            <p className="text-xs text-slate-500 mt-1">At or below threshold</p>
           </div>
         </div>
 
-        {/* Estimated Valuation */}
+        {/* Estimated Valuation & Profit Margin */}
         <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Catalog Value</span>
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Catalog Valuation</span>
             <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
               <DollarSign className="w-5 h-5" />
             </div>
@@ -175,13 +213,19 @@ const Dashboard = () => {
             <p className="text-3xl font-black text-slate-900">
               ${summary.totalRetailValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </p>
-            <p className="text-xs text-slate-500 mt-1">Retail value of inventory</p>
+            <div className="flex items-center gap-2 mt-1 text-xs">
+              <span className="text-emerald-700 font-bold flex items-center gap-0.5">
+                <TrendingUp className="w-3 h-3" />
+                {summary.profitMarginPct}% Margin
+              </span>
+              <span className="text-slate-400">• ${(summary.potentialProfit || 0).toLocaleString()} profit</span>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Low Stock Table Section (FR-6) */}
-      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+      <div id="low-stock-section" className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden scroll-mt-6">
         <div className="p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
             <div className="flex items-center gap-2">
@@ -223,7 +267,7 @@ const Dashboard = () => {
                   <th className="py-3.5 px-6">Quantity on Hand</th>
                   <th className="py-3.5 px-6">Threshold</th>
                   <th className="py-3.5 px-6">Status</th>
-                  <th className="py-3.5 px-6 text-right">Action</th>
+                  <th className="py-3.5 px-6 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-sm">
@@ -258,13 +302,22 @@ const Dashboard = () => {
                       )}
                     </td>
                     <td className="py-4 px-6 text-right">
-                      <button
-                        onClick={() => setAdjustingProduct(item)}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 transition"
-                      >
-                        <Plus className="w-3.5 h-3.5" />
-                        <span>Adjust Stock</span>
-                      </button>
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          onClick={() => setHistoryProduct(item)}
+                          className="p-1.5 rounded-lg text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition"
+                          title="View audit history"
+                        >
+                          <History className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => setAdjustingProduct(item)}
+                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 transition"
+                        >
+                          <Plus className="w-3.5 h-3.5" />
+                          <span>Adjust Stock</span>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -279,7 +332,7 @@ const Dashboard = () => {
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
           <div className="flex items-center gap-2 mb-4">
             <Activity className="w-5 h-5 text-indigo-600" />
-            <h2 className="text-base font-black text-slate-900">Recent Stock Activity</h2>
+            <h2 className="text-base font-black text-slate-900">Recent Stock Activity Log</h2>
           </div>
           <div className="divide-y divide-slate-100">
             {recentMovements.map((move) => (
@@ -311,7 +364,12 @@ const Dashboard = () => {
                     {move.previousQuantity} → {move.newQuantity} units
                   </span>
                   <p className="text-[10px] text-slate-400">
-                    {new Date(move.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    {new Date(move.createdAt).toLocaleDateString(undefined, {
+                      month: 'short',
+                      day: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
                   </p>
                 </div>
               </div>
@@ -326,6 +384,12 @@ const Dashboard = () => {
         onClose={() => setAdjustingProduct(null)}
         product={adjustingProduct}
         onAdjust={handleAdjustStock}
+      />
+
+      <StockHistoryModal
+        isOpen={!!historyProduct}
+        onClose={() => setHistoryProduct(null)}
+        product={historyProduct}
       />
 
       <ProductModal

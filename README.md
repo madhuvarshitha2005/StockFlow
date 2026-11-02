@@ -23,6 +23,10 @@ StockFlow is a streamlined, high-performance, multi-tenant SaaS inventory manage
 | **FR-5** | **Simple Stock Updates** | Inline fast-action modal for `+/- N units` adjustments with audit notes, preventing stock from falling below 0. | ✅ Done |
 | **FR-6** | **Dashboard Overview** | Executive summary cards (Total Products, Units on Hand, Low Stock Alerts, Catalog Valuation), plus a dedicated Low Stock table sorted by urgency. | ✅ Done |
 | **FR-7** | **Global Settings** | Configurable default low-stock threshold at the organization level with automatic product fallback fallback logic. | ✅ Done |
+| **Bonus** | **CSV Inventory Export** | Instant 1-click download of full catalog report as formatted CSV spreadsheet. | 🌟 Bonus |
+| **Bonus** | **Stock Audit Trail** | Full chronological movement history modal per product (deltas, reasons, users, timestamps). | 🌟 Bonus |
+| **Bonus** | **Margin & Profit Analytics** | Dynamic Gross Profit and Profit Margin (%) metrics integrated into dashboard KPIs. | 🌟 Bonus |
+| **Bonus** | **Rich Realistic Dataset** | Pre-seeded with 19 diverse catalog items, historical stock transactions, and tenant isolation demo data. | 🌟 Bonus |
 
 ---
 
