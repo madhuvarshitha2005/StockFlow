@@ -1,0 +1,28 @@
+{
+  "name": "stockflow",
+  "version": "1.0.0",
+  "description": "StockFlow - Multi-tenant SaaS Inventory Management MVP",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "npm --prefix server run dev",
+    "dev:client": "npm --prefix client run dev",
+    "build:client": "npm --prefix client run build",
+    "build": "npm run build:client",
+    "start": "npm --prefix server start",
+    "seed": "npm --prefix server run seed",
+    "test": "npm --prefix server test"
+  },
+  "keywords": [
+    "inventory",
+    "saas",
+    "multi-tenant",
+    "stockflow",
+    "react",
+    "express"
+  ],
+  "author": "madhuvarshitha2005",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
