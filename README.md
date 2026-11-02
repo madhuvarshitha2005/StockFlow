@@ -12,6 +12,22 @@ StockFlow is a streamlined, high-performance, multi-tenant SaaS inventory manage
 
 ---
 
+## 📸 Live Application Demo & Previews
+
+### 1. Executive Inventory Dashboard
+> Real-time KPI summary cards, catalog valuation ($18.6k), dynamic profit margin tracking (56.2%), urgent low-stock reorder table, and recent activity log.
+![StockFlow Dashboard](docs/screenshots/dashboard.png)
+
+### 2. Product Catalog Management & Fast CSV Export
+> Real-time search across SKUs and names, status filter pills (*Low Stock, Out of Stock, Healthy*), column sorting, inline quick adjustments, and 1-click CSV export.
+![StockFlow Catalog](docs/screenshots/products.png)
+
+### 3. Chronological Stock Audit Trail & Movement History
+> Complete event audit logging showing quantity changes, before/after levels, reason notes, user identity, and exact timestamps.
+![StockFlow Audit Trail](docs/screenshots/audit_history.png)
+
+---
+
 ## 🚀 Key Features & PRD Compliance
 
 | Requirement | PRD Feature | Implementation Details | Status |
