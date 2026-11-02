@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Organization {
+  id                        String            @id @default(uuid())
+  name                      String
+  defaultLowStockThreshold Int               @default(5)
+  createdAt                 DateTime          @default(now())
+  updatedAt                 DateTime          @updatedAt
+
+  users                     User[]
+  products                  Product[]
+  stockMovements            StockMovement[]
+}
+
+model User {
+  id             String        @id @default(uuid())
+  email          String        @unique
+  password       String
+  name           String?
+  organizationId String
+  role           String        @default("OWNER")
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  organization   Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+}
+
+model Product {
+  id                 String          @id @default(uuid())
+  organizationId     String
+  name               String
+  sku                String
+  description        String?
+  quantityOnHand     Int             @default(0)
+  costPrice          Float?
+  sellingPrice       Float?
+  lowStockThreshold  Int?
+  lastUpdatedBy      String?
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+
+  organization       Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  stockMovements     StockMovement[]
+
+  @@unique([organizationId, sku])
+  @@index([organizationId])
+}
+
+model StockMovement {
+  id               String       @id @default(uuid())
+  organizationId   String
+  productId        String
+  quantityDelta    Int
+  previousQuantity Int
+  newQuantity      Int
+  note             String?
+  adjustedBy       String?
+  createdAt        DateTime     @default(now())
+
+  organization     Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  product          Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId, productId])
+}
