@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  stockflow:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: stockflow-app
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - NODE_ENV=production
+      - DATABASE_URL=file:/app/server/prisma/prod.db
+      - JWT_SECRET=stockflow-production-secret-token-key-2026
+      - JWT_EXPIRES_IN=7d
+    volumes:
+      - stockflow_data:/app/server/prisma
+    restart: unless-stopped
+
+volumes:
+  stockflow_data:

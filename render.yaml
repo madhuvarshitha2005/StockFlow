@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: stockflow-app
+    env: node
+    plan: free
+    buildCommand: "npm --prefix client install && npm --prefix client run build && npm --prefix server install && npm --prefix server run db:generate && npm --prefix server run db:push && npm --prefix server run seed"
+    startCommand: "node server/src/index.js"
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: DATABASE_URL
+        value: file:./prod.db
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
