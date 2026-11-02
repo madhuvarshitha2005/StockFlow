@@ -5,6 +5,7 @@ import ProductModal from '../components/ProductModal';
 import StockAdjustModal from '../components/StockAdjustModal';
 import StockHistoryModal from '../components/StockHistoryModal';
 import ConfirmModal from '../components/ConfirmModal';
+import { useToast } from '../context/ToastContext';
 import {
   Search,
   Plus,
@@ -28,6 +29,8 @@ const Products = () => {
   const [statusFilter, setStatusFilter] = useState('ALL'); // 'ALL' | 'LOW' | 'OUT' | 'HEALTHY'
   const [sortBy, setSortBy] = useState('updated'); // 'updated' | 'qty_asc' | 'qty_desc' | 'name_asc' | 'price_desc'
   const [error, setError] = useState('');
+
+  const { showToast } = useToast();
 
   // Modals state
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -86,17 +89,30 @@ const Products = () => {
 
   // Handlers
   const handleSaveProduct = async (payload, id) => {
-    if (id) {
-      await api.put(`/products/${id}`, payload);
-    } else {
-      await api.post('/products', payload);
+    try {
+      if (id) {
+        await api.put(`/products/${id}`, payload);
+        showToast(`Product "${payload.name}" updated successfully!`, 'success');
+      } else {
+        await api.post('/products', payload);
+        showToast(`Product "${payload.name}" added to inventory!`, 'success');
+      }
+      await fetchProducts();
+    } catch (err) {
+      showToast(err.response?.data?.error || 'Failed to save product.', 'error');
+      throw err;
     }
-    await fetchProducts();
   };
 
   const handleAdjustStock = async (productId, delta, note) => {
-    await api.post(`/products/${productId}/adjust-stock`, { delta, note });
-    await fetchProducts();
+    try {
+      const res = await api.post(`/products/${productId}/adjust-stock`, { delta, note });
+      showToast(`Stock updated: ${delta > 0 ? '+' : ''}${delta} units (${res.data.product.name})`, 'success');
+      await fetchProducts();
+    } catch (err) {
+      showToast(err.response?.data?.error || 'Failed to adjust stock', 'error');
+      throw err;
+    }
   };
 
   const handleDeleteProduct = async () => {
@@ -104,11 +120,12 @@ const Products = () => {
     setDeleting(true);
     try {
       await api.delete(`/products/${deletingProduct.id}`);
+      showToast(`Product "${deletingProduct.name}" deleted`, 'info');
       setDeletingProduct(null);
       await fetchProducts();
     } catch (err) {
       console.error('Failed to delete product:', err);
-      setError(err.response?.data?.error || 'Failed to delete product.');
+      showToast(err.response?.data?.error || 'Failed to delete product.', 'error');
     } finally {
       setDeleting(false);
     }
@@ -161,6 +178,8 @@ const Products = () => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+
+    showToast(`Exported ${processedProducts.length} items to CSV`, 'success');
   };
 
   return (
@@ -256,7 +275,10 @@ const Products = () => {
           </div>
 
           <button
-            onClick={fetchProducts}
+            onClick={() => {
+              fetchProducts();
+              showToast('Product catalog refreshed', 'info');
+            }}
             className="p-1.5 rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-50 transition shrink-0"
             title="Refresh catalog"
           >

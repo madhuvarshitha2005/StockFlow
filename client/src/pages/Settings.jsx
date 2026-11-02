@@ -3,8 +3,11 @@ import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { Settings as SettingsIcon, Building2, User, ShieldCheck, CheckCircle2, AlertCircle } from 'lucide-react';
 
+import { useToast } from '../context/ToastContext';
+
 const Settings = () => {
   const { user, organization, updateOrganizationState } = useAuth();
+  const { showToast } = useToast();
 
   const [threshold, setThreshold] = useState(5);
   const [orgName, setOrgName] = useState('');
@@ -45,9 +48,12 @@ const Settings = () => {
 
       updateOrganizationState(res.data.organization);
       setSuccessMsg('Settings updated successfully!');
+      showToast('Organization settings updated successfully!', 'success');
       setTimeout(() => setSuccessMsg(''), 4000);
     } catch (err) {
-      setErrorMsg(err.response?.data?.error || 'Failed to save settings.');
+      const msg = err.response?.data?.error || 'Failed to save settings.';
+      setErrorMsg(msg);
+      showToast(msg, 'error');
     } finally {
       setSaving(false);
     }

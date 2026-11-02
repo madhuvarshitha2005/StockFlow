@@ -25,6 +25,10 @@ router.get('/stats', async (req, res) => {
 
     const lowStockProducts = [];
 
+    let healthyCount = 0;
+    let warningCount = 0;
+    let outOfStockCount = 0;
+
     for (const prod of products) {
       totalQuantity += prod.quantityOnHand;
       if (prod.costPrice) {
@@ -35,6 +39,14 @@ router.get('/stats', async (req, res) => {
       }
 
       const threshold = prod.lowStockThreshold ?? defaultThreshold;
+      if (prod.quantityOnHand === 0) {
+        outOfStockCount++;
+      } else if (prod.quantityOnHand <= threshold) {
+        warningCount++;
+      } else {
+        healthyCount++;
+      }
+
       if (prod.quantityOnHand <= threshold) {
         lowStockProducts.push({
           id: prod.id,
@@ -68,6 +80,10 @@ router.get('/stats', async (req, res) => {
     const potentialProfit = Math.max(0, totalRetailValue - totalCostValue);
     const profitMarginPct = totalRetailValue > 0 ? (potentialProfit / totalRetailValue) * 100 : 0;
 
+    const healthyPct = totalProducts > 0 ? Math.round((healthyCount / totalProducts) * 100) : 0;
+    const warningPct = totalProducts > 0 ? Math.round((warningCount / totalProducts) * 100) : 0;
+    const outOfStockPct = totalProducts > 0 ? Math.max(0, 100 - healthyPct - warningPct) : 0;
+
     return res.json({
       summary: {
         totalProducts,
@@ -79,6 +95,14 @@ router.get('/stats', async (req, res) => {
         lowStockCount: lowStockProducts.length,
         defaultLowStockThreshold: defaultThreshold,
         organizationName: req.user.organization.name,
+      },
+      stockHealth: {
+        healthyCount,
+        warningCount,
+        outOfStockCount,
+        healthyPct,
+        warningPct,
+        outOfStockPct,
       },
       lowStockProducts,
       recentMovements,

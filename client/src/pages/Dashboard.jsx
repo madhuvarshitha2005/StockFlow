@@ -5,6 +5,7 @@ import Badge from '../components/Badge';
 import StockAdjustModal from '../components/StockAdjustModal';
 import StockHistoryModal from '../components/StockHistoryModal';
 import ProductModal from '../components/ProductModal';
+import { useToast } from '../context/ToastContext';
 import {
   Package,
   Boxes,
@@ -19,12 +20,16 @@ import {
   Percent,
   History,
   AlertCircle,
+  PieChart,
+  ShieldCheck,
 } from 'lucide-react';
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
+  const { showToast } = useToast();
 
   // Modals state
   const [adjustingProduct, setAdjustingProduct] = useState(null);
@@ -50,13 +55,25 @@ const Dashboard = () => {
   }, []);
 
   const handleAdjustStock = async (productId, delta, note) => {
-    await api.post(`/products/${productId}/adjust-stock`, { delta, note });
-    await fetchDashboardStats();
+    try {
+      const res = await api.post(`/products/${productId}/adjust-stock`, { delta, note });
+      showToast(`Stock updated: ${delta > 0 ? '+' : ''}${delta} units (${res.data.product.name})`, 'success');
+      await fetchDashboardStats();
+    } catch (err) {
+      showToast(err.response?.data?.error || 'Failed to adjust stock', 'error');
+      throw err;
+    }
   };
 
   const handleCreateProduct = async (payload) => {
-    await api.post('/products', payload);
-    await fetchDashboardStats();
+    try {
+      const res = await api.post('/products', payload);
+      showToast(`Product "${res.data.name}" created successfully!`, 'success');
+      await fetchDashboardStats();
+    } catch (err) {
+      showToast(err.response?.data?.error || 'Failed to create product', 'error');
+      throw err;
+    }
   };
 
   if (loading && !stats) {
@@ -67,7 +84,7 @@ const Dashboard = () => {
     );
   }
 
-  const { summary, lowStockProducts, recentMovements } = stats || {
+  const { summary, stockHealth, lowStockProducts, recentMovements } = stats || {
     summary: {
       totalProducts: 0,
       totalQuantity: 0,
@@ -77,6 +94,14 @@ const Dashboard = () => {
       profitMarginPct: 0,
       lowStockCount: 0,
       defaultLowStockThreshold: 5,
+    },
+    stockHealth: {
+      healthyCount: 0,
+      warningCount: 0,
+      outOfStockCount: 0,
+      healthyPct: 0,
+      warningPct: 0,
+      outOfStockPct: 0,
     },
     lowStockProducts: [],
     recentMovements: [],
@@ -94,7 +119,10 @@ const Dashboard = () => {
         </div>
         <div className="flex items-center gap-3">
           <button
-            onClick={fetchDashboardStats}
+            onClick={() => {
+              fetchDashboardStats();
+              showToast('Dashboard metrics refreshed', 'info');
+            }}
             className="p-2.5 rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 transition"
             title="Refresh statistics"
           >
@@ -223,6 +251,65 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* Stock Health Distribution Ratio Bar */}
+      {stockHealth && summary.totalProducts > 0 && (
+        <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="w-5 h-5 text-indigo-600" />
+              <h2 className="text-sm font-bold text-slate-900">Inventory Health Breakdown</h2>
+            </div>
+            <span className="text-xs text-slate-500">{summary.totalProducts} Total SKUs</span>
+          </div>
+
+          {/* Segmented Bar */}
+          <div className="w-full h-3.5 bg-slate-100 rounded-full overflow-hidden flex shadow-inner">
+            <div
+              style={{ width: `${stockHealth.healthyPct}%` }}
+              className="bg-emerald-500 transition-all duration-500 hover:bg-emerald-600"
+              title={`Healthy: ${stockHealth.healthyCount} items (${stockHealth.healthyPct}%)`}
+            />
+            <div
+              style={{ width: `${stockHealth.warningPct}%` }}
+              className="bg-amber-400 transition-all duration-500 hover:bg-amber-500"
+              title={`Low Stock: ${stockHealth.warningCount} items (${stockHealth.warningPct}%)`}
+            />
+            <div
+              style={{ width: `${stockHealth.outOfStockPct}%` }}
+              className="bg-rose-500 transition-all duration-500 hover:bg-rose-600"
+              title={`Out of Stock: ${stockHealth.outOfStockCount} items (${stockHealth.outOfStockPct}%)`}
+            />
+          </div>
+
+          {/* Health Legend Pills */}
+          <div className="grid grid-cols-3 gap-3 mt-4 text-xs">
+            <div className="flex items-center gap-2 p-2 rounded-xl bg-emerald-50/70 border border-emerald-100">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0"></span>
+              <div>
+                <p className="font-bold text-emerald-900">{stockHealth.healthyCount} Healthy</p>
+                <p className="text-[11px] text-emerald-700">{stockHealth.healthyPct}% of catalog</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 p-2 rounded-xl bg-amber-50/70 border border-amber-100">
+              <span className="w-2.5 h-2.5 rounded-full bg-amber-400 shrink-0"></span>
+              <div>
+                <p className="font-bold text-amber-900">{stockHealth.warningCount} Low Stock</p>
+                <p className="text-[11px] text-amber-700">{stockHealth.warningPct}% of catalog</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 p-2 rounded-xl bg-rose-50/70 border border-rose-100">
+              <span className="w-2.5 h-2.5 rounded-full bg-rose-500 shrink-0"></span>
+              <div>
+                <p className="font-bold text-rose-900">{stockHealth.outOfStockCount} Depleted</p>
+                <p className="text-[11px] text-rose-700">{stockHealth.outOfStockPct}% out of stock</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Low Stock Table Section (FR-6) */}
       <div id="low-stock-section" className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden scroll-mt-6">
