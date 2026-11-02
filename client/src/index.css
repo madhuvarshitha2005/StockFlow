@@ -4,9 +4,271 @@
 
 body {
   margin: 0;
-  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  background-color: #f8fafc;
-  color: #0f172a;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: #F7F3EB;
+  color: #30241F;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3 {
+  font-family: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+  letter-spacing: -0.025em;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+input,
+textarea,
+select {
+  color: #30241F;
+  background-color: #FFFDF8;
+  border-color: #E5D9CA;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #A99584;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: #92745D;
+  outline: none;
+  box-shadow: 0 0 0 3px rgb(146 116 93 / 15%);
+}
+
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  color: #30241F;
+  background: #EAE0D2;
+}
+
+.bg-white {
+  background-color: #FFFDF8;
+}
+
+.auth-shell {
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at 12% 5%, rgb(234 224 210 / 60%), transparent 38%),
+    #F7F3EB;
+}
+
+.auth-story {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: #3B2A22;
+  color: #F7F3EB;
+}
+
+.auth-story::before,
+.auth-story::after {
+  position: absolute;
+  z-index: -1;
+  border: 1px solid rgb(234 224 210 / 14%);
+  border-radius: 50%;
+  content: '';
+}
+
+.auth-story::before {
+  width: 34rem;
+  height: 34rem;
+  right: -14rem;
+  top: -13rem;
+}
+
+.auth-story::after {
+  width: 25rem;
+  height: 25rem;
+  right: -9.5rem;
+  top: -8.5rem;
+}
+
+.auth-orbit {
+  position: absolute;
+  right: 9%;
+  bottom: 11%;
+  display: grid;
+  width: 17rem;
+  aspect-ratio: 1;
+  place-items: center;
+  border: 1px solid rgb(234 224 210 / 18%);
+  border-radius: 50%;
+  color: #EAE0D2;
+}
+
+.auth-orbit::before,
+.auth-orbit::after {
+  position: absolute;
+  border: 1px solid rgb(234 224 210 / 14%);
+  border-radius: 50%;
+  content: '';
+}
+
+.auth-orbit::before {
+  inset: 1.4rem;
+}
+
+.auth-orbit::after {
+  inset: 3rem;
+}
+
+.auth-panel {
+  background: #F7F3EB;
+}
+
+.auth-card {
+  background: rgb(255 253 248 / 92%);
+  border: 1px solid #E5D9CA;
+  box-shadow: 0 24px 80px rgb(59 42 34 / 9%);
+}
+
+.app-sidebar {
+  position: relative;
+  background: #3B2A22;
+  border-color: rgb(247 243 235 / 12%);
+}
+
+.sidebar-brand,
+.sidebar-org {
+  border-color: rgb(247 243 235 / 12%);
+}
+
+.app-sidebar .sidebar-org-card {
+  border-color: rgb(247 243 235 / 12%);
+  background: rgb(247 243 235 / 7%);
+}
+
+.app-sidebar .sidebar-tenant-card {
+  border-color: rgb(247 243 235 / 12%);
+  background: rgb(247 243 235 / 7%);
+}
+
+.app-sidebar .sidebar-tenant-copy {
+  color: #D7C8B7;
+}
+
+.app-sidebar nav a {
+  color: #D7C8B7;
+}
+
+.app-sidebar nav a:hover {
+  color: #FFFDF8;
+  background: rgb(247 243 235 / 8%);
+}
+
+.app-sidebar nav a[aria-current='page'] {
+  color: #30241F;
+  background: #EAE0D2;
+  box-shadow: none;
+}
+
+.app-navbar {
+  background: rgb(247 243 235 / 94%);
+  border-color: #E5D9CA;
+  backdrop-filter: blur(12px);
+}
+
+.app-main {
+  width: 100%;
+}
+
+.auth-mark {
+  background: #795548;
+  box-shadow: 0 10px 24px rgb(59 42 34 / 18%);
+}
+
+.auth-story-copy {
+  color: #D7C8B7;
+}
+
+.auth-demo-button {
+  border-color: #E5D9CA;
+  background: #F7F3EB;
+}
+
+.auth-demo-button:hover {
+  border-color: #CBB59D;
+  background: #F1EBE1;
+}
+
+@media (max-width: 767px) {
+  .app-shell {
+    flex-direction: column;
+  }
+
+  .app-sidebar {
+    width: 100%;
+    min-height: auto;
+  }
+
+  .sidebar-brand {
+    height: 3.75rem;
+  }
+
+  .sidebar-org,
+  .sidebar-tenant {
+    display: none;
+  }
+
+  .app-sidebar nav {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.35rem;
+    padding: 0.65rem 0.75rem;
+  }
+
+  .app-sidebar nav a {
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.55rem 0.35rem;
+    font-size: 0.72rem;
+    text-align: center;
+  }
+
+  .app-sidebar nav a svg {
+    width: 0.95rem;
+    height: 0.95rem;
+  }
+
+  .app-navbar {
+    min-height: 4rem;
+    height: auto;
+    padding: 0.75rem 1rem;
+  }
+
+  .app-main {
+    padding: 1.25rem 1rem;
+  }
+
+  .auth-orbit {
+    right: -1rem;
+    bottom: -7rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* Custom scrollbar */
@@ -16,14 +278,14 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: #F1EBE1;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #CBB59D;
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #A68B73;
 }

@@ -60,124 +60,168 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
-        <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-indigo-500 mx-auto flex items-center justify-center text-white shadow-lg shadow-indigo-100 mb-4">
-          <Package className="w-6 h-6" />
+    <div className="auth-shell grid min-h-screen lg:grid-cols-2">
+      <section className="auth-story hidden min-h-screen flex-col justify-between p-12 lg:flex xl:p-16">
+        <div className="relative z-10 flex items-center gap-3">
+          <div className="auth-mark flex h-11 w-11 items-center justify-center rounded-2xl text-white">
+            <Package className="h-5 w-5" />
+          </div>
+          <span className="text-lg font-semibold tracking-tight text-slate-50">StockFlow</span>
+          <span className="rounded-full border border-white/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-300">
+            Inventory, in order
+          </span>
         </div>
-        <h2 className="text-2xl font-extrabold tracking-tight text-slate-900">Create your StockFlow Account</h2>
-        <p className="mt-1 text-sm text-slate-500">
-          Setup your store organization and start managing stock in seconds.
-        </p>
-      </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-6 shadow-xl shadow-slate-200/50 sm:rounded-2xl border border-slate-100 sm:px-10">
-          {error && (
-            <div className="mb-5 p-3 rounded-xl bg-rose-50 border border-rose-200 flex items-start gap-2.5 text-xs text-rose-700">
-              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-              <span>{error}</span>
+        <div className="relative z-10 max-w-xl">
+          <p className="mb-4 font-script text-3xl text-amber-200">Make space for what matters.</p>
+          <h1 className="max-w-lg text-5xl font-medium leading-[1.08] tracking-tight text-slate-50 xl:text-6xl">
+            Start organizing smarter.
+          </h1>
+          <p className="auth-story-copy mt-6 max-w-md text-base leading-7">
+            Bring your products, stock levels, and everyday decisions into one beautifully clear workspace.
+          </p>
+          <div className="mt-12 flex max-w-sm items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-amber-100">
+              <Building2 className="h-5 w-5" />
             </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                Organization / Store Name <span className="text-rose-500">*</span>
-              </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  name="organizationName"
-                  required
-                  value={formData.organizationName}
-                  onChange={handleChange}
-                  placeholder="e.g. BlueStar Supply Co"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 transition"
-                />
-                <Building2 className="w-4 h-4 text-slate-400 absolute right-3.5 top-3" />
-              </div>
+              <p className="text-sm font-semibold text-slate-100">Your own workspace</p>
+              <p className="mt-1 text-xs text-slate-400">Your organization, your inventory.</p>
             </div>
-
-            <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                Your Full Name
-              </label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="e.g. Alex Morgan"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 transition"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                Work Email <span className="text-rose-500">*</span>
-              </label>
-              <input
-                type="email"
-                name="email"
-                required
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="alex@bluestarsupply.com"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 transition"
-              />
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  Password <span className="text-rose-500">*</span>
-                </label>
-                <input
-                  type="password"
-                  name="password"
-                  required
-                  value={formData.password}
-                  onChange={handleChange}
-                  placeholder="••••••••"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 transition"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  Confirm <span className="text-rose-500">*</span>
-                </label>
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  required
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  placeholder="••••••••"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 transition"
-                />
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full mt-4 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 shadow-md shadow-indigo-100 disabled:opacity-50 transition"
-            >
-              <span>{loading ? 'Creating Organization...' : 'Create Account'}</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-          </form>
-
-          <div className="mt-6 text-center text-xs text-slate-500">
-            Already have an account?{' '}
-            <Link to="/login" className="font-bold text-indigo-600 hover:text-indigo-500">
-              Sign in
-            </Link>
           </div>
         </div>
-      </div>
+
+        <div className="relative z-10 text-xs text-slate-400">Thoughtful tools for everyday business.</div>
+        <div className="auth-orbit" aria-hidden="true">
+          <div className="flex h-20 w-20 items-center justify-center rounded-2xl border border-white/15 bg-white/[0.04]">
+            <Package className="h-8 w-8 stroke-[1.2]" />
+          </div>
+        </div>
+      </section>
+
+      <section className="auth-panel flex min-h-screen items-center justify-center px-5 py-10 sm:px-8 lg:px-12">
+        <div className="w-full max-w-md">
+          <div className="mb-7 flex items-center gap-3 lg:hidden">
+            <div className="auth-mark flex h-10 w-10 items-center justify-center rounded-xl text-white">
+              <Package className="h-5 w-5" />
+            </div>
+            <span className="text-lg font-semibold tracking-tight text-slate-900">StockFlow</span>
+          </div>
+
+          <div className="auth-card rounded-[1.35rem] p-6 sm:p-9">
+            <div className="mb-6">
+              <p className="mb-2 font-script text-2xl text-indigo-600">A better rhythm for your business</p>
+              <h2 className="text-3xl font-semibold text-slate-900 sm:text-4xl">Create your account</h2>
+              <p className="mt-2 text-sm leading-6 text-slate-500">Set up your store and start organizing stock.</p>
+            </div>
+
+            {error && (
+              <div className="mb-5 flex items-start gap-2.5 rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs text-rose-700">
+                <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+                <span>{error}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="mb-1.5 block text-xs font-semibold tracking-wide text-slate-700">
+                  Organization / store name <span className="text-rose-500">*</span>
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    name="organizationName"
+                    required
+                    value={formData.organizationName}
+                    onChange={handleChange}
+                    placeholder="e.g. BlueStar Supply Co"
+                    className="w-full rounded-xl border border-slate-200 px-4 py-3 pr-11 text-sm transition"
+                  />
+                  <Building2 className="absolute right-3.5 top-3.5 h-4 w-4 text-slate-400" />
+                </div>
+              </div>
+
+              <div>
+                <label className="mb-1.5 block text-xs font-semibold tracking-wide text-slate-700">
+                  Your full name
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder="e.g. Alex Morgan"
+                  className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm transition"
+                />
+              </div>
+
+              <div>
+                <label className="mb-1.5 block text-xs font-semibold tracking-wide text-slate-700">
+                  Work email <span className="text-rose-500">*</span>
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  required
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="alex@bluestarsupply.com"
+                  className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm transition"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <div>
+                  <label className="mb-1.5 block text-xs font-semibold tracking-wide text-slate-700">
+                    Password <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    type="password"
+                    name="password"
+                    required
+                    value={formData.password}
+                    onChange={handleChange}
+                    placeholder="At least 6 characters"
+                    className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm transition"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-1.5 block text-xs font-semibold tracking-wide text-slate-700">
+                    Confirm password <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    type="password"
+                    name="confirmPassword"
+                    required
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    placeholder="Re-enter password"
+                    className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm transition"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-md shadow-indigo-900/10 transition hover:bg-indigo-700 disabled:opacity-50"
+              >
+                <span>{loading ? 'Creating Organization...' : 'Create Account'}</span>
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            </form>
+
+            <p className="mt-6 text-center text-xs text-slate-500">
+              Already have an account?{' '}
+              <Link to="/login" className="font-semibold text-indigo-700 hover:text-indigo-600">
+                Sign in
+              </Link>
+            </p>
+          </div>
+          <p className="mt-5 text-center text-[11px] text-slate-400">Your first step toward calmer inventory.</p>
+        </div>
+      </section>
     </div>
   );
 };

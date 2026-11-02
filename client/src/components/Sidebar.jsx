@@ -13,31 +13,31 @@ const Sidebar = () => {
   ];
 
   return (
-    <aside className="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0 min-h-screen">
+    <aside className="app-sidebar w-64 border-r flex flex-col shrink-0 min-h-screen">
       {/* Brand header */}
-      <div className="h-16 flex items-center px-6 border-b border-slate-100 gap-3">
-        <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-indigo-100">
+      <div className="sidebar-brand h-16 flex items-center px-6 border-b gap-3">
+        <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-md">
           <Package className="w-5 h-5" />
         </div>
         <div>
-          <span className="text-base font-extrabold tracking-tight bg-gradient-to-r from-indigo-900 to-indigo-600 bg-clip-text text-transparent">
+          <span className="text-base font-bold tracking-tight text-slate-50">
             StockFlow
           </span>
-          <span className="ml-1 text-[10px] font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded">
+          <span className="ml-1 text-[10px] font-bold uppercase tracking-wider text-slate-300 bg-white/10 px-1.5 py-0.5 rounded">
             MVP
           </span>
         </div>
       </div>
 
       {/* Organization Info Box */}
-      <div className="p-4 border-b border-slate-100">
-        <div className="bg-slate-50 rounded-xl p-3 border border-slate-100 flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center shrink-0">
+      <div className="sidebar-org p-4 border-b">
+        <div className="sidebar-org-card rounded-xl p-3 border flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-white/10 text-slate-200 flex items-center justify-center shrink-0">
             <Building2 className="w-4 h-4" />
           </div>
           <div className="min-w-0 flex-1">
             <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Organization</p>
-            <p className="text-xs font-bold text-slate-800 truncate" title={organization?.name}>
+            <p className="text-xs font-bold text-slate-50 truncate" title={organization?.name}>
               {organization?.name || 'My Organization'}
             </p>
           </div>
@@ -55,8 +55,8 @@ const Sidebar = () => {
               className={({ isActive }) =>
                 `flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all ${
                   isActive
-                    ? 'bg-indigo-50 text-indigo-700 shadow-sm'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                    ? 'bg-indigo-100 text-indigo-900 shadow-sm'
+                    : 'text-slate-300 hover:text-slate-50 hover:bg-white/10'
                 }`
               }
             >
@@ -68,13 +68,13 @@ const Sidebar = () => {
       </nav>
 
       {/* Sidebar Footer */}
-      <div className="p-4 border-t border-slate-100">
-        <div className="rounded-xl bg-gradient-to-br from-indigo-50 to-indigo-100/50 p-3 text-xs text-indigo-900 border border-indigo-100">
+      <div className="sidebar-tenant p-4 border-t border-white/10">
+        <div className="sidebar-tenant-card rounded-xl p-3 text-xs text-slate-100 border">
           <div className="flex items-center justify-between mb-1">
             <span className="font-bold">Tenant Scoped</span>
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
           </div>
-          <p className="text-indigo-600 text-[11px] leading-relaxed">
+          <p className="sidebar-tenant-copy text-[11px] leading-relaxed">
             All data strictly isolated to {organization?.name || 'your store'}.
           </p>
         </div>
