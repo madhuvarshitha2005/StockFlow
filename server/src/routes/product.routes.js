@@ -114,6 +114,24 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+// GET /api/products/:id/movements - Full movement history
+router.get('/:id/movements', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const organizationId = req.user.organizationId;
+
+    const movements = await prisma.stockMovement.findMany({
+      where: { productId: id, organizationId },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return res.json({ movements });
+  } catch (error) {
+    console.error('Get movements error:', error);
+    return res.status(500).json({ error: 'Failed to retrieve stock movement history.' });
+  }
+});
+
 // POST /api/products - Create product
 router.post('/', validate(createProductSchema), async (req, res) => {
   try {

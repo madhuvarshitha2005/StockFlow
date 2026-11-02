@@ -207,6 +207,17 @@ describe('StockFlow API Test Suite', () => {
       expect(res.status).toBe(400);
       expect(res.body.error).toContain('negative stock');
     });
+
+    it('should retrieve stock movement audit history for product', async () => {
+      const res = await request(app)
+        .get(`/api/products/${orgAProduct.id}/movements`)
+        .set('Authorization', `Bearer ${orgAToken}`);
+
+      expect(res.status).toBe(200);
+      expect(Array.isArray(res.body.movements)).toBe(true);
+      expect(res.body.movements.length).toBeGreaterThanOrEqual(1);
+      expect(res.body.movements[0].note).toBe('Restock shipment received');
+    });
   });
 
   describe('Dashboard Analytics (FR-6)', () => {

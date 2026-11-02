@@ -65,12 +65,17 @@ router.get('/stats', async (req, res) => {
       },
     });
 
+    const potentialProfit = Math.max(0, totalRetailValue - totalCostValue);
+    const profitMarginPct = totalRetailValue > 0 ? (potentialProfit / totalRetailValue) * 100 : 0;
+
     return res.json({
       summary: {
         totalProducts,
         totalQuantity,
         totalCostValue: Math.round(totalCostValue * 100) / 100,
         totalRetailValue: Math.round(totalRetailValue * 100) / 100,
+        potentialProfit: Math.round(potentialProfit * 100) / 100,
+        profitMarginPct: Math.round(profitMarginPct * 10) / 10,
         lowStockCount: lowStockProducts.length,
         defaultLowStockThreshold: defaultThreshold,
         organizationName: req.user.organization.name,
